@@ -18,6 +18,7 @@ use Barryvdh\LaravelIdeHelper\Eloquent;
 use Barryvdh\LaravelIdeHelper\Generator;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
+use Illuminate\Config\Repository as ConfigRepository;
 
 /**
  * A command to generate autocomplete information for your IDE.
@@ -56,7 +57,7 @@ class GeneratorCommand extends Command
      * @param Filesystem               $files
      * @param \Illuminate\View\Factory $view
      */
-    public function __construct(ConnfigRepository $config, Filesystem $files, $view)
+    public function __construct(ConfigRepository $config, Filesystem $files, $view)
     {
         $this->config = $config;
         $this->files  = $files;
