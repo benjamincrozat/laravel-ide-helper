@@ -16,12 +16,12 @@ class Macro extends Method
      * @param null                $methodName
      * @param array               $interfaces
      */
-    public function __construct(\ReflectionFunction $method, $alias, $class, $methodName = null, $interfaces = array())
+    public function __construct(\ReflectionFunction $method, $alias, $class, $methodName = null, $interfaces = [])
     {
-        $this->method = $method;
+        $this->method     = $method;
         $this->interfaces = $interfaces;
-        $this->name = $methodName ?: $method->name;
-        $this->namespace = $class->getNamespaceName();
+        $this->name       = $methodName ?: $method->name;
+        $this->namespace  = $class->getNamespaceName();
 
         //Create a DocBlock and serializer instance
         $this->phpdoc = new DocBlock($method);
@@ -42,6 +42,6 @@ class Macro extends Method
 
         //Reference the 'real' function in the declaringclass
         $this->declaringClassName = '\\' . ltrim($class->name, '\\');
-        $this->root = '\\' . ltrim($class->getName(), '\\');
+        $this->root               = '\\' . ltrim($class->getName(), '\\');
     }
 }

@@ -1,30 +1,31 @@
 <?php
+
 /**
- * Laravel IDE Helper Generator
+ * Laravel IDE Helper Generator.
  *
  * @author    Barry vd. Heuvel <barryvdh@gmail.com>
  * @copyright 2014 Barry vd. Heuvel / Fruitcake Studio (http://www.fruitcakestudio.nl)
  * @license   http://www.opensource.org/licenses/mit-license.php MIT
- * @link      https://github.com/barryvdh/laravel-ide-helper
+ *
+ * @see      https://github.com/barryvdh/laravel-ide-helper
  */
 
 namespace Barryvdh\LaravelIdeHelper\Console;
 
-use Barryvdh\LaravelIdeHelper\Eloquent;
-use Barryvdh\LaravelIdeHelper\Generator;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
+use Barryvdh\LaravelIdeHelper\Eloquent;
+use Barryvdh\LaravelIdeHelper\Generator;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 
 /**
- * A command to generate autocomplete information for your IDE
+ * A command to generate autocomplete information for your IDE.
  *
  * @author Barry vd. Heuvel <barryvdh@gmail.com>
  */
 class GeneratorCommand extends Command
 {
-
     /**
      * The console command name.
      *
@@ -39,10 +40,10 @@ class GeneratorCommand extends Command
      */
     protected $description = 'Generate a new IDE Helper file.';
 
-    /** @var \Illuminate\Config\Repository */
+    /** @var ConfigRepository */
     protected $config;
 
-    /** @var \Illuminate\Filesystem\Filesystem */
+    /** @var Filesystem */
     protected $files;
 
     /** @var \Illuminate\View\Factory */
@@ -50,29 +51,22 @@ class GeneratorCommand extends Command
 
     protected $onlyExtend;
 
-
     /**
-     *
-     * @param \Illuminate\Config\Repository $config
-     * @param \Illuminate\Filesystem\Filesystem $files
+     * @param ConfigRepository         $config
+     * @param Filesystem               $files
      * @param \Illuminate\View\Factory $view
      */
-    public function __construct(
-        /*ConfigRepository */ $config,
-        Filesystem $files,
-        /* Illuminate\View\Factory */
-        $view
-    ) {
+    public function __construct(ConnfigRepository $config, Filesystem $files, $view)
+    {
         $this->config = $config;
-        $this->files = $files;
-        $this->view = $view;
+        $this->files  = $files;
+        $this->view   = $view;
+
         parent::__construct();
     }
 
     /**
      * Execute the console command.
-     *
-     * @return void
      */
     public function handle()
     {
@@ -84,10 +78,10 @@ class GeneratorCommand extends Command
             );
         } else {
             $filename = $this->argument('filename');
-            $format = $this->option('format');
+            $format   = $this->option('format');
 
             // Strip the php extension
-            if (substr($filename, -4, 4) == '.php') {
+            if ('.php' === substr($filename, -4, 4)) {
                 $filename = substr($filename, 0, -4);
             }
 
@@ -97,12 +91,11 @@ class GeneratorCommand extends Command
                 $this->useMemoryDriver();
             }
 
-
             $helpers = '';
             if ($this->option('helpers') || ($this->config->get('ide-helper.include_helpers'))) {
-                foreach ($this->config->get('ide-helper.helper_files', array()) as $helper) {
+                foreach ($this->config->get('ide-helper.helper_files', []) as $helper) {
                     if (file_exists($helper)) {
-                        $helpers .= str_replace(array('<?php', '?>'), '', $this->files->get($helper));
+                        $helpers .= str_replace(['<?php', '?>'], '', $this->files->get($helper));
                     }
                 }
             } else {
@@ -110,11 +103,12 @@ class GeneratorCommand extends Command
             }
 
             $generator = new Generator($this->config, $this->view, $this->getOutput(), $helpers);
-            $content = $generator->generate($format);
-            $written = $this->files->put($filename, $content);
+            $content   = $generator->generate($format);
+            $written   = $this->files->put($filename, $content);
 
-            if ($written !== false) {
+            if (false !== $written) {
                 $this->info("A new helper file was written to $filename");
+
                 Eloquent::writeEloquentModelHelper($this, $this->files);
             } else {
                 $this->error("The helper file could not be created at $filename");
@@ -124,14 +118,16 @@ class GeneratorCommand extends Command
 
     protected function useMemoryDriver()
     {
-        //Use a sqlite database in memory, to avoid connection errors on Database facades
+        // Use a SQLite database in memory, to avoid connection errors on database Facades.
+
         $this->config->set(
             'database.connections.sqlite',
-            array(
-                'driver' => 'sqlite',
+            [
+                'driver'   => 'sqlite',
                 'database' => ':memory:',
-            )
+            ]
         );
+
         $this->config->set('database.default', 'sqlite');
     }
 
@@ -140,15 +136,16 @@ class GeneratorCommand extends Command
      *
      * @return array
      */
-    protected function getArguments()
+    protected function getArguments() : array
     {
-        $filename = $this->config->get('ide-helper.filename');
-
-        return array(
-            array(
-                'filename', InputArgument::OPTIONAL, 'The path to the helper file', $filename
-            ),
-        );
+        return [
+            [
+                'filename',
+                InputArgument::OPTIONAL,
+                'The path to the helper file',
+                $this->config->get('ide-helper.filename'),
+            ],
+        ];
     }
 
     /**
@@ -160,11 +157,11 @@ class GeneratorCommand extends Command
     {
         $format = $this->config->get('ide-helper.format');
 
-        return array(
-            array('format', "F", InputOption::VALUE_OPTIONAL, 'The format for the IDE Helper', $format),
-            array('helpers', "H", InputOption::VALUE_NONE, 'Include the helper files'),
-            array('memory', "M", InputOption::VALUE_NONE, 'Use sqlite memory driver'),
-            array('sublime', "S", InputOption::VALUE_NONE, 'DEPRECATED: Use different style for SublimeText CodeIntel'),
-        );
+        return [
+            ['format', 'F', InputOption::VALUE_OPTIONAL, 'The format for the IDE Helper', $format],
+            ['helpers', 'H', InputOption::VALUE_NONE, 'Include the helper files'],
+            ['memory', 'M', InputOption::VALUE_NONE, 'Use sqlite memory driver'],
+            ['sublime', 'S', InputOption::VALUE_NONE, 'DEPRECATED: Use different style for SublimeText CodeIntel'],
+        ];
     }
 }

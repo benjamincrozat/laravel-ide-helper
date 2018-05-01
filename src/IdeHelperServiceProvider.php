@@ -1,28 +1,29 @@
 <?php
+
 /**
- * Laravel IDE Helper Generator
+ * Laravel IDE Helper Generator.
  *
  * @author    Barry vd. Heuvel <barryvdh@gmail.com>
  * @copyright 2014 Barry vd. Heuvel / Fruitcake Studio (http://www.fruitcakestudio.nl)
  * @license   http://www.opensource.org/licenses/mit-license.php MIT
- * @link      https://github.com/barryvdh/laravel-ide-helper
+ *
+ * @see      https://github.com/barryvdh/laravel-ide-helper
  */
 
 namespace Barryvdh\LaravelIdeHelper;
 
-use Barryvdh\LaravelIdeHelper\Console\EloquentCommand;
-use Barryvdh\LaravelIdeHelper\Console\GeneratorCommand;
-use Barryvdh\LaravelIdeHelper\Console\MetaCommand;
-use Barryvdh\LaravelIdeHelper\Console\ModelsCommand;
-use Illuminate\Support\ServiceProvider;
-use Illuminate\View\Engines\EngineResolver;
-use Illuminate\View\Engines\PhpEngine;
 use Illuminate\View\Factory;
 use Illuminate\View\FileViewFinder;
+use Illuminate\View\Engines\PhpEngine;
+use Illuminate\Support\ServiceProvider;
+use Illuminate\View\Engines\EngineResolver;
+use Barryvdh\LaravelIdeHelper\Console\MetaCommand;
+use Barryvdh\LaravelIdeHelper\Console\ModelsCommand;
+use Barryvdh\LaravelIdeHelper\Console\EloquentCommand;
+use Barryvdh\LaravelIdeHelper\Console\GeneratorCommand;
 
 class IdeHelperServiceProvider extends ServiceProvider
 {
-
     /**
      * Indicates if loading of the provider is deferred.
      *
@@ -32,12 +33,10 @@ class IdeHelperServiceProvider extends ServiceProvider
 
     /**
      * Bootstrap the application events.
-     *
-     * @return void
      */
     public function boot()
     {
-        $viewPath = __DIR__.'/../resources/views';
+        $viewPath = __DIR__ . '/../resources/views';
         $this->loadViewsFrom($viewPath, 'ide-helper');
 
         $configPath = __DIR__ . '/../config/ide-helper.php';
@@ -51,8 +50,6 @@ class IdeHelperServiceProvider extends ServiceProvider
 
     /**
      * Register the service provider.
-     *
-     * @return void
      */
     public function register()
     {
@@ -103,7 +100,7 @@ class IdeHelperServiceProvider extends ServiceProvider
      */
     public function provides()
     {
-        return array('command.ide-helper.generate', 'command.ide-helper.models');
+        return ['command.ide-helper.generate', 'command.ide-helper.models'];
     }
 
     /**
@@ -115,7 +112,7 @@ class IdeHelperServiceProvider extends ServiceProvider
         $resolver->register('php', function () {
             return new PhpEngine();
         });
-        $finder = new FileViewFinder($this->app['files'], [__DIR__ . '/../resources/views']);
+        $finder  = new FileViewFinder($this->app['files'], [__DIR__ . '/../resources/views']);
         $factory = new Factory($resolver, $finder, $this->app['events']);
         $factory->addExtension('php', 'php');
 

@@ -1,15 +1,15 @@
 <?php
 
-namespace Barryvdh\LaravelIdeHelper;
+use Barryvdh\LaravelIdeHelper\Method;
 
-class ExampleTest extends \PHPUnit_Framework_TestCase
+class MethodTest extends PHPUnit\Framework\TestCase
 {
     /**
      * Test that we can actually instantiate the class
      */
     public function testCanInstantiate()
     {
-        $reflectionClass = new \ReflectionClass(ExampleClass::class);
+        $reflectionClass = new ReflectionClass(ExampleClass::class);
         $reflectionMethod = $reflectionClass->getMethod('setName');
 
         $method = new Method($reflectionMethod, 'Example', $reflectionClass);
@@ -22,19 +22,15 @@ class ExampleTest extends \PHPUnit_Framework_TestCase
      */
     public function testOutput()
     {
-        $reflectionClass = new \ReflectionClass(ExampleClass::class);
+        $reflectionClass = new ReflectionClass(ExampleClass::class);
         $reflectionMethod = $reflectionClass->getMethod('setName');
 
         $method = new Method($reflectionMethod, 'Example', $reflectionClass);
 
         $output = '/**
- * 
- *
  * @param string $last
  * @param string $first
- * @static 
  */';
-        $this->assertEquals($output, $method->getDocComment(''));
         $this->assertEquals('setName', $method->getName());
         $this->assertEquals('\\'.ExampleClass::class, $method->getDeclaringClass());
         $this->assertEquals('$last, $first', $method->getParams(true));

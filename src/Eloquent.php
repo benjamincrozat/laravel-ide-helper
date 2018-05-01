@@ -1,29 +1,28 @@
 <?php
 
 /**
- * Laravel IDE Helper to add \Eloquent mixin to Eloquent\Model
+ * Laravel IDE Helper to add \Eloquent mixin to Eloquent\Model.
  *
  * @author Charles A. Peterson <artistan@gmail.com>
  */
+
 namespace Barryvdh\LaravelIdeHelper;
 
 use Illuminate\Console\Command;
-use Illuminate\Filesystem\Filesystem;
 use Barryvdh\Reflection\DocBlock;
+use Barryvdh\Reflection\DocBlock\Tag;
+use Illuminate\Filesystem\Filesystem;
 use Barryvdh\Reflection\DocBlock\Context;
 use Barryvdh\Reflection\DocBlock\Serializer as DocBlockSerializer;
-use Barryvdh\Reflection\DocBlock\Tag;
 
 class Eloquent
 {
     /**
      * Write mixin helper to the Eloquent\Model
-     * This is needed since laravel/framework v5.4.29
+     * This is needed since laravel/framework v5.4.29.
      *
      * @param Command    $command
      * @param Filesystem $files
-     *
-     * @return void
      */
     public static function writeEloquentModelHelper(Command $command, Filesystem $files)
     {
@@ -32,14 +31,14 @@ class Eloquent
         $reflection  = new \ReflectionClass($class);
         $namespace   = $reflection->getNamespaceName();
         $originalDoc = $reflection->getDocComment();
-        if (!$originalDoc) {
+        if (! $originalDoc) {
             $command->info('Unexpected no document on ' . $class);
         }
         $phpdoc = new DocBlock($reflection, new Context($namespace));
 
         $mixins = $phpdoc->getTagsByName('mixin');
         foreach ($mixins as $m) {
-            if ($m->getContent() === '\Eloquent') {
+            if ('\Eloquent' === $m->getContent()) {
                 $command->info('Tag Exists: @mixin \Eloquent in ' . $class);
 
                 return;
@@ -47,7 +46,7 @@ class Eloquent
         }
 
         // add the Eloquent mixin
-        $phpdoc->appendTag(Tag::createInstance("@mixin \\Eloquent", $phpdoc));
+        $phpdoc->appendTag(Tag::createInstance('@mixin \\Eloquent', $phpdoc));
 
         $serializer = new DocBlockSerializer();
         $serializer->getDocComment($phpdoc);

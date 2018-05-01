@@ -1,11 +1,12 @@
 <?php
 /**
- * Laravel IDE Helper Generator
+ * Laravel IDE Helper Generator.
  *
  * @author    Barry vd. Heuvel <barryvdh@gmail.com>
  * @copyright 2015 Barry vd. Heuvel / Fruitcake Studio (http://www.fruitcakestudio.nl)
  * @license   http://www.opensource.org/licenses/mit-license.php MIT
- * @link      https://github.com/barryvdh/laravel-ide-helper
+ *
+ * @see      https://github.com/barryvdh/laravel-ide-helper
  */
 
 namespace Barryvdh\LaravelIdeHelper\Console;
@@ -15,13 +16,12 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * A command to generate phpstorm meta data
+ * A command to generate phpstorm meta data.
  *
  * @author Barry vd. Heuvel <barryvdh@gmail.com>
  */
 class MetaCommand extends Command
 {
-
     /**
      * The console command name.
      *
@@ -56,29 +56,26 @@ class MetaCommand extends Command
     ];
 
     /**
-     *
      * @param \Illuminate\Contracts\Filesystem\Filesystem $files
-     * @param \Illuminate\Contracts\View\Factory $view
-     * @param \Illuminate\Contracts\Config $config
+     * @param \Illuminate\Contracts\View\Factory          $view
+     * @param \Illuminate\Contracts\Config                $config
      */
     public function __construct($files, $view, $config)
     {
-        $this->files = $files;
-        $this->view = $view;
+        $this->files  = $files;
+        $this->view   = $view;
         $this->config = $config;
         parent::__construct();
     }
 
     /**
      * Execute the console command.
-     *
-     * @return void
      */
     public function handle()
     {
         $this->registerClassAutoloadExceptions();
 
-        $bindings = array();
+        $bindings = [];
         foreach ($this->getAbstracts() as $abstract) {
             // Validator and seeder cause problems
             if (in_array($abstract, ['validator', 'seeder'])) {
@@ -92,20 +89,20 @@ class MetaCommand extends Command
                 }
             } catch (\Exception $e) {
                 if ($this->output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE) {
-                    $this->comment("Cannot make '$abstract': ".$e->getMessage());
+                    $this->comment("Cannot make '$abstract': " . $e->getMessage());
                 }
             }
         }
 
         $content = $this->view->make('meta', [
           'bindings' => $bindings,
-          'methods' => $this->methods,
+          'methods'  => $this->methods,
         ])->render();
 
         $filename = $this->option('filename');
-        $written = $this->files->put($filename, $content);
+        $written  = $this->files->put($filename, $content);
 
-        if ($written !== false) {
+        if (false !== $written) {
             $this->info("A new meta file was written to $filename");
         } else {
             $this->error("The meta file could not be created at $filename");
@@ -144,8 +141,8 @@ class MetaCommand extends Command
     {
         $filename = $this->config->get('ide-helper.meta_filename');
 
-        return array(
-            array('filename', 'F', InputOption::VALUE_OPTIONAL, 'The path to the meta file', $filename),
-        );
+        return [
+            ['filename', 'F', InputOption::VALUE_OPTIONAL, 'The path to the meta file', $filename],
+        ];
     }
 }

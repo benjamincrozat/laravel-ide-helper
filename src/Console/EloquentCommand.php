@@ -1,21 +1,23 @@
 <?php
+
 /**
- * Laravel IDE Helper Generator - Eloquent Model Mixin
+ * Laravel IDE Helper Generator - Eloquent Model Mixin.
  *
  * @author    Charles A. Peterson <artistan@gmail.com>
  * @copyright 2017 Charles A. Peterson / Fruitcake Studio (http://www.fruitcakestudio.nl)
  * @license   http://www.opensource.org/licenses/mit-license.php MIT
- * @link      https://github.com/barryvdh/laravel-ide-helper
+ *
+ * @see      https://github.com/barryvdh/laravel-ide-helper
  */
 
 namespace Barryvdh\LaravelIdeHelper\Console;
 
-use Barryvdh\LaravelIdeHelper\Eloquent;
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
+use Barryvdh\LaravelIdeHelper\Eloquent;
 
 /**
- * A command to add \Eloquent mixin to Eloquent\Model
+ * A command to add \Eloquent mixin to Eloquent\Model.
  *
  * @author Charles A. Peterson <artistan@gmail.com>
  */
@@ -29,7 +31,7 @@ class EloquentCommand extends Command
     protected $name = 'ide-helper:eloquent';
 
     /**
-     * @var Filesystem $files
+     * @var Filesystem
      */
     protected $files;
 
@@ -51,8 +53,6 @@ class EloquentCommand extends Command
 
     /**
      * Execute the console command.
-     *
-     * @return void
      */
     public function handle()
     {
